@@ -6,8 +6,18 @@
           <v-card-text>
             <h3>Settings</h3>
             <p>Update your profile</p>
-            <v-avatar size="128"
-              ><v-img :src="userProfile.profileImage" />
+                        <v-avatar size="128"
+              ><v-img
+                :src="userProfile.profileImage"
+                v-if="userProfile.profileImage"
+              />
+              <v-icon
+                size="77"
+                v-if="!userProfile.profileImage"
+                style="box-shadow: inset 0px 0px 30px rgba(0, 0, 0, 0.2)"
+              >
+                mdi-account
+              </v-icon>
             </v-avatar>
 
             <transition name="fade">
