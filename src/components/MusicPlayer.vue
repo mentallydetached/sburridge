@@ -76,6 +76,10 @@
                       <v-btn icon v-if="!loaded" @click.native="reload()">
                         <v-icon>mdi-refresh</v-icon>
                       </v-btn>
+                      <v-btn icon @click.native="likeSong()">
+                        <v-icon v-if="!liked">mdi-heart-outline</v-icon>
+                        <v-icon v-if="liked">mdi-heart</v-icon>
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -121,6 +125,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    liked: {
+      type: Boolean,
+      default: () => false,
+    },
   },
   computed: {
     duration: function () {
@@ -141,6 +149,7 @@ export default {
     };
   },
   methods: {
+    likeSong() {},
     close() {
       this.$emit("close");
     },
