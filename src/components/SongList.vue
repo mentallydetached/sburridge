@@ -43,7 +43,7 @@
                 <v-list-item-subtitle>{{
                   song.artistName
                 }}</v-list-item-subtitle>
-                <v-list-item-title class="title" color="primary" dark v-on="on">
+                <v-list-item-title class="title" color="primary" dark>
                   {{ song.songName }}
                 </v-list-item-title>
               </v-list-item-content>
