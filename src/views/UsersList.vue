@@ -4,7 +4,7 @@
       <v-img :src="imageLinks.parallaxBackground" fluid aspect-ratio="7">
         <v-card outlined class="ma-6">
           <v-card-text>
-            <h3>User List</h3>
+            <p class="display-1 my-7">User List</p>
             <v-container>
               <v-row>
                 <v-col

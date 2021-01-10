@@ -4,9 +4,9 @@
       <v-img :src="imageLinks.parallaxBackground" fluid aspect-ratio="7">
         <v-card outlined class="ma-6">
           <v-card-text>
-            <h3>Settings</h3>
+            <p class="display-1 mt-7">Account Settings</p>
             <p>Update your profile</p>
-                        <v-avatar size="128"
+            <v-avatar size="128"
               ><v-img
                 :src="userProfile.profileImage"
                 v-if="userProfile.profileImage"
