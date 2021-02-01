@@ -96,6 +96,7 @@
           :link="musicPlayerData.link"
           :artist="musicPlayerData.artist"
           :song="musicPlayerData.song"
+          :liked="liked(musicPlayerData.liked)"
           v-if="musicPlayerData.link"
           @close="closePlayer"
           id="musicPlayer"
@@ -168,6 +169,9 @@ export default {
     },
   }),
   methods: {
+    liked(likes) {
+      return likes.includes(this.userProfile.uid);
+    },
     close: function () {
       this.flag = false;
     },

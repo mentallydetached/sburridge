@@ -63,6 +63,8 @@ const store = new Vuex.Store({
             fb.usersCollection.doc(user.uid).set({
               name: user.displayName,
               email: user.email,
+              uid: user.uid,
+              memberSince: fb.database.ServerValue.TIMESTAMP,
               profileImage: user.photoURL
             });
           }
@@ -111,7 +113,9 @@ const store = new Vuex.Store({
       // create user profile
       await fb.usersCollection.doc(user.uid).set({
         name: form.name,
-        email: form.email
+        email: form.email,
+        uid: user.uid,
+        memberSince: fb.database.ServerValue.TIMESTAMP
       });
 
       // upload avatar to storage
@@ -272,7 +276,8 @@ const store = new Vuex.Store({
                 songNameLower: form.songName.toLowerCase(),
                 genre: form.songGenre,
                 likes: [],
-                songURL: uploadedSong
+                songURL: uploadedSong,
+                uploadDate: fb.database.ServerValue.TIMESTAMP
               })
               .then(function (result) {
                 dispatch("getSongs");
