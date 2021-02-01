@@ -4,26 +4,15 @@
       <v-container class="pa-0">
         <br class="d-none d-md-flex" />
         <v-card outlined class="pa-3 lifted" tile>
-          <v-img
-            :src="imageLinks.siteBanner"
-            class="d-xl-none"
-            v-if="!this.$vuetify.theme.dark"
-          ></v-img>
-          <v-img
-            :src="imageLinks.siteBannerDark"
-            class="d-xl-none"
-            v-if="this.$vuetify.theme.dark"
-          ></v-img>
-          <v-app-bar
-            class="d-none d-xl-flex elevation-0"
-            color="#1F4565"
-            dark
-            prominent
-            :src="imageLinks.blurryBackground"
-            ><v-app-bar-title class="text-h3 text-uppercase"
-              >Spencer Burridge</v-app-bar-title
+          <div class="banner">
+            <div
+              class="bannerImage"
+              :class="{ darkFont: this.$vuetify.theme.dark }"
             >
-          </v-app-bar>
+              <div>SPENCER</div>
+              <div>BURRIDGE</div>
+            </div>
+          </div>
           <v-container>
             <v-tabs grow :value="tabIndex">
               <v-tab
@@ -96,7 +85,9 @@
           :link="musicPlayerData.link"
           :artist="musicPlayerData.artist"
           :song="musicPlayerData.song"
-          :liked="liked(musicPlayerData.liked)"
+          :likedSong="musicPlayerData.likedSong"
+          :songNameLower="musicPlayerData.songNameLower"
+          :uid="musicPlayerData.uid"
           v-if="musicPlayerData.link"
           @close="closePlayer"
           id="musicPlayer"
@@ -169,9 +160,6 @@ export default {
     },
   }),
   methods: {
-    liked(likes) {
-      return likes.includes(this.userProfile.uid);
-    },
     close: function () {
       this.flag = false;
     },
@@ -215,6 +203,9 @@ export default {
         link: "",
         artist: "",
         song: "",
+        songNameLower: "",
+        uid: "",
+        likedSong: 0,
       });
     },
   },
@@ -439,5 +430,45 @@ export default {
 }
 .hyperlink:hover {
   text-decoration: underline;
+}
+
+.banner {
+  padding: 1.1em;
+}
+.bannerImage {
+  background-image: url("https://sburridge.com/img/blurrybackgroundsquare.95293e63.png");
+  background-position: 50% 36%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: block;
+  width: 1759px;
+  max-width: 100%;
+  height: 128px;
+  font-family: Impact;
+  letter-spacing: 0.15em;
+  font-size: 4em;
+  position: relative;
+  user-select: none;
+}
+
+.bannerImage div:nth-child(1n) {
+  transform: scale(1, 1.27);
+}
+
+.bannerImage div:nth-child(1) {
+  position: absolute;
+  top: -0.25em;
+  left: -0.03em;
+}
+.bannerImage div:nth-child(2) {
+  position: absolute;
+  bottom: -0.25em;
+  left: -0.045em;
+  letter-spacing: 0.13em;
+}
+.darkFont {
+  color: #1E1E1E;
 }
 </style>

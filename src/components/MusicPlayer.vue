@@ -77,8 +77,8 @@
                         <v-icon>mdi-refresh</v-icon>
                       </v-btn>
                       <v-btn icon @click.native="likeSong()">
-                        <v-icon v-if="!liked">mdi-heart-outline</v-icon>
-                        <v-icon v-if="liked">mdi-heart</v-icon>
+                        <v-icon v-if="!likedSong">mdi-heart-outline</v-icon>
+                        <v-icon v-if="likedSong">mdi-heart</v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -104,6 +104,14 @@ export default {
       type: String,
       default: null,
     },
+    songNameLower: {
+      type: String,
+      default: null,
+    },
+    uid: {
+      type: String,
+      default: null,
+    },
     artist: {
       type: String,
       default: null,
@@ -125,9 +133,9 @@ export default {
       type: Function,
       default: () => {},
     },
-    liked: {
-      type: Boolean,
-      default: () => false,
+    likedSong: {
+      type: Number,
+      default: () => null,
     },
   },
   computed: {
@@ -149,7 +157,14 @@ export default {
     };
   },
   methods: {
-    likeSong() {},
+    likeSong() {
+      let song = {
+        songURL: this.link,
+        uid: this.uid,
+        songNameLower: this.songNameLower,
+      };
+      this.$store.dispatch("likeSong", { song });
+    },
     close() {
       this.$emit("close");
     },

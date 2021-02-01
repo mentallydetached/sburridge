@@ -51,7 +51,7 @@ const store = new Vuex.Store({
       fb.auth
         .signInWithPopup(fb.provider)
         .then(function (result) {
-          //          console.log(result);
+          //console.log(result);
           // This gives you a Google Access Token.
           //var token = result.credential.accessToken;
           // The signed-in user info.
@@ -59,12 +59,13 @@ const store = new Vuex.Store({
 
           // Is this a new account?
           if (result.additionalUserInfo.isNewUser) {
-            // create user profile object in userCollections
+            // create user profile object in usersCollection
+
             fb.usersCollection.doc(user.uid).set({
               name: user.displayName,
               email: user.email,
               uid: user.uid,
-              memberSince: fb.database.ServerValue.TIMESTAMP,
+              memberSince: new Date(),
               profileImage: user.photoURL
             });
           }
@@ -72,7 +73,9 @@ const store = new Vuex.Store({
           // fetch user profile and set in state
           dispatch("fetchUserProfile", user, true);
         })
-        .catch(function (error) {});
+        .catch(function (error) {
+          console.log("There was an error: " + error);
+        });
     },
 
     async login({ dispatch }, form) {
@@ -115,7 +118,7 @@ const store = new Vuex.Store({
         name: form.name,
         email: form.email,
         uid: user.uid,
-        memberSince: fb.database.ServerValue.TIMESTAMP
+        memberSince: new Date()
       });
 
       // upload avatar to storage
@@ -129,7 +132,7 @@ const store = new Vuex.Store({
             result.ref.getDownloadURL().then(function (result) {
               profilePic = result;
               // create user profile object in userCollections
-              fb.usersCollection.doc(user.uid).set({
+              fb.usersCollection.doc(user.uid).update({
                 profileImage: profilePic
               });
               // fetch user profile and set in state
@@ -212,30 +215,6 @@ const store = new Vuex.Store({
       }
       // fetch user profile and set in state
       await dispatch("fetchUserProfile", { uid: AuthUser.uid });
-
-      //      dispatch("fetchUserProfile", { uid: userId });
-
-      // update all posts by user
-      /*
-      const postDocs = await fb.postsCollection
-        .where("userId", "==", userId)
-        .get();
-      postDocs.forEach((doc) => {
-        fb.postsCollection.doc(doc.id).update({
-          userName: user.name
-        });
-      });
-
-      // update all comments by user
-      const commentDocs = await fb.commentsCollection
-        .where("userId", "==", userId)
-        .get();
-      commentDocs.forEach((doc) => {
-        fb.commentsCollection.doc(doc.id).update({
-          userName: user.name
-        });
-      });
-      */
     },
 
     async uploadSong({ dispatch }, form) {
@@ -277,7 +256,7 @@ const store = new Vuex.Store({
                 genre: form.songGenre,
                 likes: [],
                 songURL: uploadedSong,
-                uploadDate: fb.database.ServerValue.TIMESTAMP
+                uploadDate: new Date()
               })
               .then(function (result) {
                 dispatch("getSongs");
@@ -285,6 +264,47 @@ const store = new Vuex.Store({
               });
           });
         });
+    },
+
+    async likeSong({ dispatch }, data) {
+      if (this.state.userProfile.uid) {
+        const snapshot = await fb.songsCollection
+          .where("songURL", "==", data.song.songURL)
+          .where("uid", "==", data.song.uid)
+          .where("songNameLower", "==", data.song.songNameLower)
+          .get();
+        if (snapshot.size === 1) {
+          if (
+            snapshot.docs[0].data().likes.includes(this.state.userProfile.uid)
+          ) {
+            await fb.songsCollection.doc(snapshot.docs[0].id).update({
+              likes: fb.firebase.default.firestore.FieldValue.arrayRemove(
+                this.state.userProfile.uid
+              )
+            });
+          } else {
+            await fb.songsCollection.doc(snapshot.docs[0].id).update({
+              likes: fb.firebase.default.firestore.FieldValue.arrayUnion(
+                this.state.userProfile.uid
+              )
+            });
+          }
+
+          let playerData = {
+            link: snapshot.docs[0].data().songURL,
+            artist: snapshot.docs[0].data().artistName,
+            song: snapshot.docs[0].data().songName,
+            likedSong: snapshot.docs[0]
+              .data()
+              .likes.includes(this.state.userProfile.uid)
+              ? 0
+              : 1,
+            uid: snapshot.docs[0].data().uid,
+            songNameLower: snapshot.docs[0].data().songNameLower
+          };
+          store.commit("setMusicPlayerData", playerData);
+        }
+      }
     },
 
     async getSongs({ dispatch }, searchData) {
@@ -303,7 +323,12 @@ const store = new Vuex.Store({
       const snapshot = await fb.songsCollection
         .where(searchField, "==", searchValueLower)
         .get();
-      const songList = snapshot.docs.map((doc) => doc.data());
+      const songList = snapshot.docs.map((doc) => ({
+        likedSong: doc.data().likes.includes(this.state.userProfile.uid)
+          ? 1
+          : 0,
+        ...doc.data()
+      }));
       store.commit("setSongsList", songList);
     },
 
@@ -317,9 +342,18 @@ const store = new Vuex.Store({
         setPlayerData &&
         setPlayerData.hasOwnProperty("link") &&
         setPlayerData.hasOwnProperty("artist") &&
-        setPlayerData.hasOwnProperty("song")
+        setPlayerData.hasOwnProperty("song") &&
+        setPlayerData.hasOwnProperty("songNameLower") &&
+        setPlayerData.hasOwnProperty("likedSong")
           ? setPlayerData
-          : { link: "", artist: "", song: "" };
+          : {
+              link: "",
+              artist: "",
+              song: "",
+              likedSong: 0,
+              uid: "",
+              songNameLower: ""
+            };
 
       store.commit("setMusicPlayerData", playerData);
     }

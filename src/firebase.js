@@ -44,5 +44,6 @@ export {
   songsCollection,
   commentsCollection,
   likesCollection,
-  storageCollection
+  storageCollection,
+  firebase
 };
