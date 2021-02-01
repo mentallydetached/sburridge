@@ -83,7 +83,7 @@ const routes = [
     path: "/users",
     name: "Users List",
     component: UsersList,
-    meta: {
+    meta: { 
       requiresAuth: true
     },
     hidden: false

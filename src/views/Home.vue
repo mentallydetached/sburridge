@@ -31,8 +31,8 @@ export default {
   name: "home",
   components: {
     HomeContent,
-  },
-  data: () => ({
+  }, 
+  data: ()=> ({
     imageLinks: {
       parallaxBackground: require("@/assets/blurrybackgroundsquare.png"),
     },

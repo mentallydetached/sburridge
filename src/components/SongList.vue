@@ -12,19 +12,29 @@
           outlined
           max-width="400"
           @click="
-            updateMusicPlayer(song.songURL, song.artistName, song.songName)
+            updateMusicPlayer(
+              song.songURL,
+              song.artistName,
+              song.songName,
+              song.likedSong,
+              song.songNameLower,
+              song.uid
+            )
           "
         >
           <v-rating
+            v-if="userProfile.uid"
             empty-icon="mdi-heart-outline"
             full-icon="mdi-heart"
-            hover
             length="1"
             size="16"
             color="red lighten-3"
             class="text-right float-right"
+            @input="likeSong($event, song)"
+            v-model="song.likedSong"
             clearable
-          ></v-rating>
+          >
+          </v-rating>
           <v-card-text class="ma-0 pa-0">
             <v-list-item two-line class="mb-2">
               <v-list-item-avatar
@@ -87,12 +97,15 @@ export default {
   components: {},
   data: () => ({
     searchTerm: "",
+    rating: null,
     imageLink: require("@/assets/bluebg.png"),
+    likeList: [],
   }),
   mounted() {
     this.getSongList("artistNameLower", "Mentally Detached");
   },
   computed: {
+    ...mapState(["userProfile"]),
     ...mapState(["songsList"]),
   },
   methods: {
@@ -102,14 +115,20 @@ export default {
         value: searchterm,
       });
     },
+    likeSong(value, song) {
+      this.$store.dispatch("likeSong", { song });
+    },
     songTitleFirstLetter(name) {
       return name.charAt(0);
     },
-    updateMusicPlayer(link, artist, song) {
+    updateMusicPlayer(link, artist, song, likedSong, songNameLower, uid) {
       this.$store.dispatch("setPlayerData", {
         link: link,
         artist: artist,
         song: song,
+        likedSong: likedSong,
+        songNameLower: songNameLower,
+        uid: uid,
       });
     },
   },
