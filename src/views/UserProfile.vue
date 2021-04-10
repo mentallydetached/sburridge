@@ -3,6 +3,11 @@
     <div class="profile">
       <v-img :src="imageLinks.blurryBackground" fluid aspect-ratio="7">
         <v-card outlined class="ma-6">
+          <router-link to="/users">
+            <v-btn icon class="float-left">
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
+          </router-link>
           <v-card-text>
             <p class="display-1 my-7">
               {{ profileData.name }}

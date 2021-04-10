@@ -13,7 +13,8 @@ const store = new Vuex.Store({
     songsList: {},
     musicPlayerData: {},
     errorMessage: "",
-    uploadStatus: {}
+    uploadStatus: {},
+    searchTerms: {}
   },
   mutations: {
     setUserProfile(state, val) {
@@ -36,6 +37,10 @@ const store = new Vuex.Store({
     },
     setUploadStatus(state, val) {
       state.uploadStatus = val;
+    },
+    setSearchTerms(state, valObj) {
+      state.searchTerms = {};
+      state.searchTerms[valObj.field] = valObj.val;
     }
   },
 
@@ -266,8 +271,8 @@ const store = new Vuex.Store({
         });
     },
 
-    async likeSong({ dispatch }, data) {
-      if (this.state.userProfile.uid) {
+    async likeSong({ commit, dispatch, state }, data) {
+      if (state.userProfile.uid) {
         const snapshot = await fb.songsCollection
           .where("songURL", "==", data.song.songURL)
           .where("uid", "==", data.song.uid)
@@ -296,18 +301,19 @@ const store = new Vuex.Store({
             song: snapshot.docs[0].data().songName,
             likedSong: snapshot.docs[0]
               .data()
-              .likes.includes(this.state.userProfile.uid)
+              .likes.includes(state.userProfile.uid)
               ? 0
               : 1,
             uid: snapshot.docs[0].data().uid,
             songNameLower: snapshot.docs[0].data().songNameLower
           };
-          store.commit("setMusicPlayerData", playerData);
+          commit("setMusicPlayerData", playerData);
+          dispatch("getSongs", state.searchTerms);
         }
       }
     },
 
-    async getSongs({ dispatch }, searchData) {
+    async getSongs({ commit }, searchData) {
       let searchValueLower;
       let searchField;
       if (searchData && searchData.hasOwnProperty("value")) {
@@ -320,6 +326,7 @@ const store = new Vuex.Store({
         searchValueLower = "mentally detached";
         searchField = "artistNameLower";
       }
+      commit("setSearchTerms", { field: searchField, val: searchValueLower });
       const snapshot = await fb.songsCollection
         .where(searchField, "==", searchValueLower)
         .get();
@@ -329,14 +336,14 @@ const store = new Vuex.Store({
           : 0,
         ...doc.data()
       }));
-      store.commit("setSongsList", songList);
+      commit("setSongsList", songList);
     },
 
-    async setUploadStatus({ dispatch }, status) {
-      store.commit("setUploadStatus", status);
+    async setUploadStatus({ commit }, status) {
+      commit("setUploadStatus", status);
     },
 
-    async setPlayerData({ dispatch }, setPlayerData) {
+    async setPlayerData({ commit }, setPlayerData) {
       let playerData;
       playerData =
         setPlayerData &&
@@ -355,7 +362,7 @@ const store = new Vuex.Store({
               songNameLower: ""
             };
 
-      store.commit("setMusicPlayerData", playerData);
+      commit("setMusicPlayerData", playerData);
     }
   }
 });

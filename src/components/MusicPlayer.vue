@@ -164,6 +164,7 @@ export default {
         songNameLower: this.songNameLower,
       };
       this.$store.dispatch("likeSong", { song });
+      this.$emit("toggleLike");
     },
     close() {
       this.$emit("close");

@@ -1,45 +1,20 @@
 <template>
   <v-container>
     <div class="music">
-      <v-row>
-        <v-col
-          v-for="(chart, index) in charts"
-          v-bind:key="index"
-          class="col-12 col-md-12"
-        >
-          <v-card outlined>
-            <v-sheet
-              :style="
-                'background: url(' +
-                imageLinks.parallaxBackground +
-                ') no-repeat; background-size: 100%;'
-              "
-              tile
-              ><div
-                class="white--text text-caption text-sm-subtitle-1 pt-1"
-                style="height: 3px"
-              >
-                {{ chart.name }}
-              </div>
-              <v-sparkline
-                :value="chart.value"
-                :labels="chart.datalabels"
-                color="rgba(255, 255, 255, .7)"
-                height="60"
-                label-size="5"
-                line-width="2"
-                padding="15"
-                stroke-linecap="round"
-                smooth="5"
-                style="max-height: 10rem"
-                auto-draw
-              ></v-sparkline>
-            </v-sheet>
-          </v-card>
-        </v-col>
-      </v-row>
-      <br />
-      <SongSearch />
+      <v-sheet
+        :style="
+          'background: url(' +
+          imageLinks.parallaxBackground +
+          ') no-repeat; background-size: 100%;'
+        "
+        class="mb-6"
+        tile
+        dark
+      >
+        <v-container class="px-6 pt-6">
+          <SongSearch />
+        </v-container>
+      </v-sheet>
       <SongResults />
       <v-container v-if="loggedIn">
         <div class="text-body-2 pb-2 pt-5" v-if="!uploadVisible">

@@ -37,6 +37,11 @@ export default {
   data: () => ({
     latestUpdates: [
       {
+        title: "Added ability to like songs",
+        body:
+          "Now we can easily pick out the best tracks and build out your library.",
+      },
+      {
         title: "Updated theme and added authentication",
         body:
           "Now we'll be able to start having fun with user-generated content. Will be adding more stuff soon.",

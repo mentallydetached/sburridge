@@ -90,6 +90,7 @@
           :uid="musicPlayerData.uid"
           v-if="musicPlayerData.link"
           @close="closePlayer"
+          @toggleLike="toggleLike"
           id="musicPlayer"
           class="ma-0 py-0"
           :class="{ musicPlayerFooter: isIntersecting }"
@@ -207,6 +208,9 @@ export default {
         uid: "",
         likedSong: 0,
       });
+    },
+    toggleLike(song) {
+      // this.$store.dispatch("likeSong", { song });
     },
   },
   mounted() {},

@@ -107,6 +107,7 @@ export default {
   computed: {
     ...mapState(["userProfile"]),
     ...mapState(["songsList"]),
+    ...mapState(["searchTerms"]),
   },
   methods: {
     getSongList(searchtype, searchterm) {

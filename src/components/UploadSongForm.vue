@@ -60,13 +60,12 @@
               </v-list-item>
             </template>
           </v-combobox>
-
           <v-file-input
             show-size
             :rules="rules"
             :disabled="disableInputs"
             v-model="file"
-            accept="audio/*"
+            accept="audio/*,.mp4"
             prepend-icon="mdi-music-note"
             label="Audio File"
           ></v-file-input>
@@ -122,13 +121,7 @@ export default {
         "Profile file size should be less than 10 MB.",
       (value) =>
         !value ||
-        [
-          "audio/mpeg",
-          "audio/mp4",
-          "audio/mp3",
-          "audio/ogg",
-          "audio/x-aiff",
-        ].includes(value.type) ||
+        ["audio/*", "video/mp4"].includes(value.type) ||
         "Only compressed music files are supported at this time.",
     ],
     songNameRules: [
